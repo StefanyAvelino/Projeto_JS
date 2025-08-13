@@ -4,10 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atividades de JavaScript</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />   
+    <style>
+      /* Pequeno ajuste para o link voltar */
+      a.voltar {
+        display: inline-block;
+        margin-top: 20px;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      a.voltar:hover {
+        text-decoration: underline;
+      }
+    </style>
+    <script>
+        // Verificar Par ou Ímpar
+        function verificarParOuImpar() {
+        let numero;
+        do {
+            let entrada = prompt("Digite um número inteiro positivo:");
+            numero = parseInt(entrada);
+            if (isNaN(numero) || numero <= 0 || !Number.isInteger(numero)) {
+            alert("Por favor, digite um número inteiro positivo válido.");
+            }
+        } while (isNaN(numero) || numero <= 0 || !Number.isInteger(numero));
+
+        if (numero % 2 === 0) {
+            alert("O número " + numero + " é PAR.");
+        } else {
+            alert("O número " + numero + " é ÍMPAR.");
+        }
+        }
+
+        // Verificar se é Primo
+        function verificarPrimo() {
+        let numero;
+        do {
+            let entrada = prompt("Digite um número inteiro positivo:");
+            numero = parseInt(entrada);
+            if (isNaN(numero) || numero <= 0 || !Number.isInteger(numero)) {
+            alert("Por favor, digite um número inteiro positivo válido.");
+            }
+        } while (isNaN(numero) || numero <= 0 || !Number.isInteger(numero));
+
+        let ehPrimo = true;
+        if (numero <= 1) ehPrimo = false;
+        else {
+            for (let i = 2; i <= Math.sqrt(numero); i++) {
+            if (numero % i === 0) {
+                ehPrimo = false;
+                break;
+            }
+            }
+        }
+
+        if (ehPrimo) {
+            alert("O número " + numero + " é PRIMO.");
+        } else {
+            alert("O número " + numero + " NÃO é primo.");
+        }
+        }
+
+        // Calcular Fatorial
+        function calcularFatorial() {
+        let numero;
+        do {
+            let entrada = prompt("Digite um número inteiro positivo:");
+            numero = parseInt(entrada);
+            if (isNaN(numero) || numero < 0 || !Number.isInteger(numero)) {
+            alert("Por favor, digite um número inteiro positivo válido.");
+            }
+        } while (isNaN(numero) || numero < 0 || !Number.isInteger(numero));
+
+        let resultado = 1;
+        for (let i = 2; i <= numero; i++) {
+            resultado *= i;
+        }
+
+        alert("O fatorial de " + numero + " é: " + resultado);
+        }
+
+        // Verificar Tipo do Dado
+        function verificarTipoDado() {
+        let entrada = prompt("Digite algum dado:");
+        let confirmar = confirm("Deseja verificar o tipo do dado informado?");
+        
+        let tipo;
+        if (!isNaN(entrada) && entrada.trim() !== "") {
+            tipo = "Number";
+        } else if (entrada.toLowerCase() === "true" || entrada.toLowerCase() === "false") {
+            tipo = "Boolean";
+        } else {
+            tipo = "String";
+        }
+
+        if (confirmar) {
+            document.body.innerHTML += "<p>O tipo do dado informado é: <strong>" + tipo + "</strong></p>";
+        } else {
+            document.body.innerHTML += "<p><strong>Obrigado por visitar esta página.</strong></p>";
+        }
+        }
+  </script>
 </head>
-<body>
-    <h1>Semana 1</h1>
-    <a href="index.html">Voltar</a>
-    
+<body class="bg-light">
+    <div class="container py-5">
+      <h1 class="mb-4">Escolha uma opção:</h1>
+  
+      <div class="d-grid gap-3 col-6 mx-auto">
+        <button class="btn btn-primary btn-lg" onclick="verificarParOuImpar()">1. Verificar Par ou Ímpar</button>
+        <button class="btn btn-success btn-lg" onclick="verificarPrimo()">2. Verificar se é Primo</button>
+        <button class="btn btn-warning btn-lg" onclick="calcularFatorial()">3. Calcular Fatorial</button>
+        <button class="btn btn-info btn-lg text-white" onclick="verificarTipoDado()">4. Verificar Tipo do Dado</button>
+      </div>
+  
+      <div class="text-center">
+        <a href="index.html" class="voltar btn btn-outline-secondary mt-4">Voltar</a>
+      </div>
+    </div>
 </body>
 </html>
