@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Playlist Interativa - TODO List</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      color: #fff;
+    }
+    .container {
+      background: #2c2c54;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+      max-width: 480px;
+      width: 100%;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+    }
+    .input-group-text {
+      background-color: #764ba2;
+      border: none;
+      color: #fff;
+    }
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #667eea;
+    }
+    .list-group-item {
+      background-color: #3c3c70;
+      border: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #ddd;
+      font-weight: 500;
+    }
+    .list-group-item:nth-child(odd) {
+      background-color: #4b4b85;
+    }
+    .btn-group button {
+      margin-left: 0.3rem;
+    }
+    .btn-edit {
+      background-color: #ffb142;
+      border: none;
+      color: #222;
+    }
+    .btn-edit:hover {
+      background-color: #ffa502;
+      color: #000;
+    }
+    .btn-delete {
+      background-color: #ff4757;
+      border: none;
+      color: #fff;
+    }
+    .btn-delete:hover {
+      background-color: #e84118;
+    }
+  </style>
+</head>
+<body class="bg-light text-center">
+
+  <div class="container shadow">
+    <h1>Minha Playlist</h1>
+    <div class="input-group mb-3">
+      <input type="text" id="novaMusica" class="form-control" placeholder="Adicionar nova música..." />
+      <button class="btn btn-primary" id="btnAdd">Adicionar</button>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 justify-content-center mb-3">
+        <button class="btn btn-success" id="btnSort">Ordenar (A-Z)</button>
+        <button class="btn btn-warning" id="btnFilter">Filtrar (Só com 'amor')</button>
+        <button class="btn btn-danger" id="btnPop">Remover Última</button>
+        <button class="btn btn-secondary" id="btnClearFilter">Limpar Filtro</button>
+      </div>
+
+    <ul class="list-group" id="playlist"></ul>
+        <a href="index.html" class="btn btn-outline-secondary mt-4">Voltar</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    let playlist = [];
+
+    // Elementos do DOM
+    const inputMusica = document.getElementById('novaMusica');
+    const btnAdd = document.getElementById('btnAdd');
+    const btnSort = document.getElementById('btnSort');
+    const btnFilter = document.getElementById('btnFilter');
+    const btnPop = document.getElementById('btnPop');
+    const btnClearFilter = document.getElementById('btnClearFilter');
+    const ulPlaylist = document.getElementById('playlist');
+
+    let filtroAtivo = false;
+    let playlistFiltrada = [];
+
+    function renderizarLista(arr) {
+      ulPlaylist.innerHTML = '';
+      for (const musica of arr) {
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+
+        const texto = document.createElement('span');
+        texto.textContent = musica;
+
+        const btnGroup = document.createElement('div');
+        btnGroup.className = 'btn-group';
+
+        const btnEdit = document.createElement('button');
+        btnEdit.className = 'btn btn-sm btn-edit';
+        btnEdit.textContent = 'Editar';
+        btnEdit.onclick = () => editarMusica(musica);
+
+        const btnDelete = document.createElement('button');
+        btnDelete.className = 'btn btn-sm btn-delete';
+        btnDelete.textContent = 'Excluir';
+        btnDelete.onclick = () => excluirMusica(musica);
+
+        btnGroup.appendChild(btnEdit);
+        btnGroup.appendChild(btnDelete);
+
+        li.appendChild(texto);
+        li.appendChild(btnGroup);
+
+        ulPlaylist.appendChild(li);
+      }
+    }
+
+    // Função para adicionar música
+    function adicionarMusica() {
+      const nova = inputMusica.value.trim();
+      if (nova === '') {
+        alert('Digite o nome da música!');
+        return;
+      }
+      playlist.push(nova);
+      inputMusica.value = '';
+      filtroAtivo = false;
+      renderizarLista(playlist);
+    }
+
+    // Função para excluir música
+    function excluirMusica(nome) {
+      playlist = playlist.filter(m => m !== nome);
+      filtroAtivo = false;
+      renderizarLista(playlist);
+    }
+
+    // Função para editar música
+    function editarMusica(nomeAntigo) {
+      const novoNome = prompt('Edite o nome da música:', nomeAntigo);
+      if (novoNome !== null) {
+        const nomeTrim = novoNome.trim();
+        if (nomeTrim === '') {
+          alert('O nome não pode ficar vazio!');
+          return;
+        }
+        const index = playlist.indexOf(nomeAntigo);
+        if (index > -1) {
+          playlist[index] = nomeTrim;
+          filtroAtivo = false;
+          renderizarLista(playlist);
+        }
+      }
+    }
+
+    function ordenarPlaylist() {
+      playlist.sort((a, b) => a.localeCompare(b));
+      filtroAtivo = false;
+      renderizarLista(playlist);
+    }
+
+    function filtrarPlaylist() {
+      playlistFiltrada = playlist.filter(m => m.toLowerCase().includes('amor'));
+      filtroAtivo = true;
+      renderizarLista(playlistFiltrada);
+    }
+
+    function removerUltimaMusica() {
+      if (playlist.length === 0) {
+        alert('A playlist está vazia!');
+        return;
+      }
+      playlist.pop();
+      filtroAtivo = false;
+      renderizarLista(playlist);
+    }
+
+    function limparFiltro() {
+      filtroAtivo = false;
+      renderizarLista(playlist);
+    }
+
+    btnAdd.addEventListener('click', adicionarMusica);
+    btnSort.addEventListener('click', ordenarPlaylist);
+    btnFilter.addEventListener('click', filtrarPlaylist);
+    btnPop.addEventListener('click', removerUltimaMusica);
+    btnClearFilter.addEventListener('click', limparFiltro);
+
+
+    inputMusica.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        adicionarMusica();
+      }
+    });
+
+    renderizarLista(playlist);
+
+  </script>
+</body>
+</html>
