@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Formulário de Cadastro Pessoa</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      background: #f9f9f9;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center; /* horizontal center */
+      align-items: center; /* vertical center */
+      margin: 0;
+      padding: 20px;
+    }
+    .form-container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      width: 100%;
+      max-width: 480px;
+    }
+    h1 {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 26px;
+      color: #000;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    label {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      color: rgba(34, 34, 34, 0.9);
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="radio"],
+    input[type="reset"],
+    input[type="submit"],
+    input[type="button"],
+    input,
+    button {
+      font-family: Helvetica, Arial, sans-serif;
+    }
+    input[type="text"],
+    input[type="email"] {
+      font-size: 12px;
+      color: #999;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      width: 100%;
+      padding: 5px 0;
+      outline: none;
+      background: transparent;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      border-bottom-color: #888;
+    }
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 3px;
+    }
+    #resultado {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      color: #333;
+    }
+    .btn-custom {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      background: #eee;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      padding: 7px 16px;
+      cursor: pointer;
+      margin-top: 25px;
+      margin-right: 10px;
+      transition: background-color 0.3s ease;
+    }
+    .btn-custom:hover {
+      background-color: #ddd;
+    }
+    /* Radio buttons inline with labels */
+    .perfil-group {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .perfil-group label {
+      font-size: 12px;
+      color: #222;
+      opacity: 0.9;
+      margin: 0;
+    }
+    /* Ajuste para esconder campos */
+    #campoCurso,
+    #campoMatricula,
+    #campoArea,
+    #campoLattes {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Cadastro Aluno/Professor</h1>
+    <form id="formCadastro" onsubmit="return enviarFormulario();">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" value="Carlos" onblur="validarNome()" />
+      <div id="erroNome" class="error"></div>
+
+      <label for="sobrenome">Sobrenome:</label>
+      <input type="text" id="sobrenome" value="Pereira" onblur="validarSobrenome()" />
+      <div id="erroSobrenome" class="error"></div>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" value="carlos@example.com" onblur="validarEmailOnBlur()" />
+      <div id="erroEmail" class="error"></div>
+
+      <label for="dataNascimento">Data de nascimento (dd/mm/aaaa):</label>
+      <input type="text" id="dataNascimento" value="15/08/1990" onblur="validarDataOnBlur()" />
+      <div id="erroData" class="error"></div>
+
+      <label for="telefoneFixo">Telefone Fixo:</label>
+      <input type="text" id="telefoneFixo" value="(12)3456-7890" maxlength="14" oninput="mascaraTelefone(this)" onblur="validarTelefoneFixo()" />
+      <div id="erroTelefoneFixo" class="error"></div>
+
+      <label for="telefoneCelular">Telefone Celular:</label>
+      <input type="text" id="telefoneCelular" value="(12)9876-5432" maxlength="14" oninput="mascaraTelefone(this)" onblur="validarTelefoneCelular()" />
+      <div id="erroTelefoneCelular" class="error"></div>
+
+      <label>Perfil:</label>
+      <div class="perfil-group">
+        <input type="radio" id="professor" name="perfil" value="professor" checked onchange="mostrarCampos()" />
+        <label for="professor">Professor</label>
+        <input type="radio" id="aluno" name="perfil" value="aluno" onchange="mostrarCampos()" />
+        <label for="aluno">Aluno</label>
+      </div>
+
+      <div id="campoArea">
+        <label for="areaAtuacao">Área de atuação:</label>
+        <input type="text" id="areaAtuacao" value="Computação" onblur="validarArea()" />
+        <div id="erroArea" class="error"></div>
+      </div>
+
+      <div id="campoLattes">
+        <label for="linkLattes">Link Lattes:</label>
+        <input type="text" id="linkLattes" value="http://lattes.cnpq.br/123456" onblur="validarLattes()" />
+        <div id="erroLattes" class="error"></div>
+      </div>
+
+      <div id="campoCurso" style="display:none;">
+        <label for="curso">Curso:</label>
+        <input type="text" id="curso" value="História" onblur="validarCurso()" />
+        <div id="erroCurso" class="error"></div>
+      </div>
+
+      <div id="campoMatricula" style="display:none;">
+        <label for="matricula">Matrícula:</label>
+        <input type="text" id="matricula" value="1234467789" maxlength="10" onblur="validarMatricula()" />
+        <div id="erroMatricula" class="error"></div>
+      </div>
+
+      <button type="submit" class="btn-custom">Enviar</button>
+      <button type="reset" class="btn-custom" onclick="resetForm()">Redefinir</button>
+    </form>
+    <div id="resultado"></div>
+    <div class="text-center">
+        <a href="index.html" class="voltar btn btn-outline-secondary mt-4">Voltar</a>
+      </div>
+</div>
+
+<script>
+  
+  function Pessoa (){
+    let nome;
+    let sobrenome;
+    let email;
+    let data_nascimento;
+    let telefone_fixo;
+    let telefone_celular;
+
+    this.setNome = function(vNome){
+        nome = vNome;
+    };
+    this.getNome = function () {
+        return nome;
+    };
+    this.setSobrenome = function(vSobrenome){
+        sobrenome = vSobrenome;
+    };
+    this.getSobrenome = function () {
+        return sobrenome;
+    }
+    this.setEmail = function(vEmail){
+        email = vEmail;
+    };
+    this.getEmail = function () {
+        return email;
+    };
+    this.setDataNascimento = function(vData){
+        data_nascimento = vData;
+    };
+    this.getDataNascimento = function () {
+        return data_nascimento;
+    };
+    this.setTelefoneFixo = function(vFixo){
+        telefone_fixo = vFixo;
+    };
+    this.getTelefoneFixo = function () {
+        return telefone_fixo;
+    };
+    this.setTelefoneCelular = function(vCelular){
+        telefone_celular = vCelular;
+    };
+    this.getTelefoneCelular = function () {
+        return telefone_celular;
+    };
+    this.nomeCompleto = function(){
+        return nome + " " + sobrenome;
+    };
+
+
+  }
+
+  function Aluno(){
+    Pessoa.call(this);
+    let matricula;
+    let curso;
+
+    this.setCurso = function(vCurso){
+        curso = vCurso;
+    };
+    this.getCurso = function () {
+        return curso;
+    };
+
+    this.setMatricula = function(vMatricula){
+        matricula = vMatricula;
+    };
+    this.getMatricula = function () {
+        return matricula;
+    };
+  }
+
+  function Professor(){
+    Pessoa.call(this);
+    let area_atuacao;
+    let link_lattes;
+
+    this.setAreaAtuacao = function(vArea){
+        area_atuacao = vArea;
+    };
+    this.getAreaAtuacao = function () {
+        return area_atuacao;
+    };
+
+    this.setLinkLattes = function(vLink){
+        link_lattes = vLink;
+    };
+    this.getLinkLattes = function () {
+        return link_lattes;
+    };
+  }
+
+    // Mostrar campos de acordo com o perfil
+    function mostrarCampos() {
+      const perfil = document.querySelector('input[name="perfil"]:checked').value;
+      document.getElementById("campoCurso").style.display = perfil === "aluno" ? "block" : "none";
+      document.getElementById("campoMatricula").style.display = perfil === "aluno" ? "block" : "none";
+      document.getElementById("campoArea").style.display = perfil === "professor" ? "block" : "none";
+      document.getElementById("campoLattes").style.display = perfil === "professor" ? "block" : "none";
+
+      limparErros();
+      document.getElementById("resultado").innerText = "";
+    }
+
+    // Limpar erros
+    function limparErros() {
+      document.querySelectorAll(".error").forEach(e => e.innerText = "");
+    }
+
+    // Validações onBlur
+    function validarNome() {
+      const nome = document.getElementById("nome").value.trim();
+      if (!nome) {
+        document.getElementById("erroNome").innerText = "Informe o nome";
+        return false;
+      } else {
+        document.getElementById("erroNome").innerText = "";
+        return true;
+      }
+    }
+
+    function validarSobrenome() {
+      const sobrenome = document.getElementById("sobrenome").value.trim();
+      if (!sobrenome) {
+        document.getElementById("erroSobrenome").innerText = "Informe o sobrenome";
+        return false;
+      } else {
+        document.getElementById("erroSobrenome").innerText = "";
+        return true;
+      }
+    }
+
+    function validarEmailOnBlur() {
+      const email = document.getElementById("email").value.trim();
+      if (!validarEmail(email)) {
+        document.getElementById("erroEmail").innerText = "Email inválido";
+        return false;
+      } else {
+        document.getElementById("erroEmail").innerText = "";
+        return true;
+      }
+    }
+
+    function validarDataOnBlur() {
+      const data = document.getElementById("dataNascimento").value.trim();
+      if (!validarData(data)) {
+        document.getElementById("erroData").innerText = "Data inválida";
+        return false;
+      } else {
+        document.getElementById("erroData").innerText = "";
+        return true;
+      }
+    }
+
+    function validarTelefoneFixo() {
+      const tel = document.getElementById("telefoneFixo").value.trim();
+      const regex = /^\(\d{2}\)\d{4}-\d{4}$/;
+      if (!regex.test(tel)) {
+        document.getElementById("erroTelefoneFixo").innerText = "Telefone fixo inválido";
+        return false;
+      } else {
+        document.getElementById("erroTelefoneFixo").innerText = "";
+        return true;
+      }
+    }
+
+    function validarTelefoneCelular() {
+      const tel = document.getElementById("telefoneCelular").value.trim();
+      const regex = /^\(\d{2}\)\d{4}-\d{4}$/;
+      if (!regex.test(tel)) {
+        document.getElementById("erroTelefoneCelular").innerText = "Telefone celular inválido";
+        return false;
+      } else {
+        document.getElementById("erroTelefoneCelular").innerText = "";
+        return true;
+      }
+    }
+
+    function validarCurso() {
+      const curso = document.getElementById("curso").value.trim();
+      if (!curso) {
+        document.getElementById("erroCurso").innerText = "Informe o curso";
+        return false;
+      } else {
+        document.getElementById("erroCurso").innerText = "";
+        return true;
+      }
+    }
+
+    function validarMatricula() {
+      const matricula = document.getElementById("matricula").value.trim();
+      // Aluno: 10 dígitos
+      if (matricula.length !== 10 || !/^\d{10}$/.test(matricula)) {
+        document.getElementById("erroMatricula").innerText = "Matrícula deve ter 10 dígitos";
+        return false;
+      } else {
+        document.getElementById("erroMatricula").innerText = "";
+        return true;
+      }
+    }
+
+    function validarArea() {
+      const area = document.getElementById("areaAtuacao").value.trim();
+      if (!area) {
+        document.getElementById("erroArea").innerText = "Informe a área de atuação";
+        return false;
+      } else {
+        document.getElementById("erroArea").innerText = "";
+        return true;
+      }
+    }
+
+    function validarLattes() {
+      const lattes = document.getElementById("linkLattes").value.trim();
+      if (!/^https?:\/\/lattes\.cnpq\.br\/\d+$/i.test(lattes)) {
+        document.getElementById("erroLattes").innerText = "Link Lattes inválido (ex: http://lattes.cnpq.br/123456)";
+        return false;
+      } else {
+        document.getElementById("erroLattes").innerText = "";
+        return true;
+      }
+    }
+
+    // Funções auxiliares
+    function validarEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    function validarData(data) {
+      const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+      if (!regex.test(data)) return false;
+      const partes = data.split("/");
+      const dia = parseInt(partes[0], 10);
+      const mes = parseInt(partes[1], 10) - 1;
+      const ano = parseInt(partes[2], 10);
+      const dataObj = new Date(ano, mes, dia);
+      return dataObj.getFullYear() === ano && dataObj.getMonth() === mes && dataObj.getDate() === dia;
+    }
+
+    // Máscara telefone (xx)xxxx-xxxx
+    function mascaraTelefone(tel) {
+      let val = tel.value.replace(/\D/g, '');
+      if (val.length > 10) val = val.slice(0, 10);
+      let res = '';
+
+      if (val.length > 0) res += '(';
+      if (val.length >= 1) res += val.substring(0, 2);
+      if (val.length >= 3) res += ')';
+      if (val.length >= 3) res += val.substring(2, 6);
+      if (val.length >= 7) res += '-';
+      if (val.length >= 7) res += val.substring(6);
+
+      tel.value = res;
+    }
+
+    // Enviar formulário e validar tudo
+    function enviarFormulario() {
+      limparErros();
+      let valido = true;
+
+      if (!validarNome()) valido = false;
+      if (!validarSobrenome()) valido = false;
+      if (!validarEmailOnBlur()) valido = false;
+      if (!validarDataOnBlur()) valido = false;
+      if (!validarTelefoneFixo()) valido = false;
+      if (!validarTelefoneCelular()) valido = false;
+
+      const perfil = document.querySelector('input[name="perfil"]:checked').value;
+
+      if (perfil === "aluno") {
+        if (!validarCurso()) valido = false;
+        if (!validarMatricula()) valido = false;
+      } else if (perfil === "professor") {
+        if (!validarArea()) valido = false;
+        if (!validarLattes()) valido = false;
+      }
+
+      if (!valido) return false;
+
+      let resultado = "";
+      if (perfil === "aluno") {
+        let a = new Aluno();
+        a.setNome(document.getElementById("nome").value.trim());
+        a.setSobrenome(document.getElementById("sobrenome").value.trim());
+        a.setEmail(document.getElementById("email").value.trim());
+        a.setDataNascimento(document.getElementById("dataNascimento").value.trim());
+        a.setTelefoneFixo(document.getElementById("telefoneFixo").value.trim());
+        a.setTelefoneCelular(document.getElementById("telefoneCelular").value.trim());
+        a.setCurso(document.getElementById("curso").value.trim());
+        a.setMatricula(document.getElementById("matricula").value.trim());
+
+        resultado += "Aluno cadastrado:\n";
+        resultado += `Nome Completo: ${a.nomeCompleto()}\n`;
+        resultado += `Email: ${a.getEmail()}\n`;
+        resultado += `Data Nascimento: ${a.getDataNascimento()}\n`;
+        resultado += `Telefone Fixo: ${a.getTelefoneFixo()}\n`;
+        resultado += `Telefone Celular: ${a.getTelefoneCelular()}\n`;
+        resultado += `Curso: ${a.getCurso()}\n`;
+        resultado += `Matrícula: ${a.getMatricula()}\n`;
+      } else {
+        let p = new Professor();
+        p.setNome(document.getElementById("nome").value.trim());
+        p.setSobrenome(document.getElementById("sobrenome").value.trim());
+        p.setEmail(document.getElementById("email").value.trim());
+        p.setDataNascimento(document.getElementById("dataNascimento").value.trim());
+        p.setTelefoneFixo(document.getElementById("telefoneFixo").value.trim());
+        p.setTelefoneCelular(document.getElementById("telefoneCelular").value.trim());
+        p.setAreaAtuacao(document.getElementById("areaAtuacao").value.trim());
+        p.setLinkLattes(document.getElementById("linkLattes").value.trim());
+
+        resultado += "Professor cadastrado:\n";
+        resultado += `Nome Completo: ${p.nomeCompleto()}\n`;
+        resultado += `Email: ${p.getEmail()}\n`;
+        resultado += `Data Nascimento: ${p.getDataNascimento()}\n`;
+        resultado += `Telefone Fixo: ${p.getTelefoneFixo()}\n`;
+        resultado += `Telefone Celular: ${p.getTelefoneCelular()}\n`;
+        resultado += `Área de Atuação: ${p.getAreaAtuacao()}\n`;
+        resultado += `Link Lattes: ${p.getLinkLattes()}\n`;
+      }
+
+      document.getElementById("resultado").innerText = resultado;
+      return false; // Para não enviar de verdade e perder a página
+    }
+
+    // Reset form
+    function resetForm() {
+      limparErros();
+      document.getElementById("resultado").innerText = "";
+      mostrarCampos();
+    }
+
+    // Inicializa a exibição correta dos campos
+    mostrarCampos();
+  </script>
+</body>
+</html>
